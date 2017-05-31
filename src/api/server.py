@@ -14,6 +14,10 @@ class Server(object):
             '/': {
                 'view_func': self.index,
                 'methods': ['GET']
+            },
+            '/gary': {
+                'view_func': self.gary,
+                'methods': ['GET']
             }
         }
 
@@ -34,4 +38,10 @@ class Server(object):
         return jsonify({
             'system': self._app.config['PLATFORM'],
             'message': 'ping'
+        })
+
+    def gary(self):
+        return jsonify({
+            'system': self._app.config['PLATFORM'],
+            'message': 'HELP! I\'M STUCK IN A SERVER!'
         })
