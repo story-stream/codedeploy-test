@@ -1,0 +1,39 @@
+version: 0.0
+os: linux
+files:
+  - source: /src
+    destination: /srv/codedeploydemo/code
+  - source: /requirements.txt
+    destination: /srv/codedeploydemo/code
+  - source: /deploy/live_server.py
+    destination: /srv/codedeploydemo/code
+  - source: /deploy/nginx/codedeploydemo
+    destination: /etc/nginx/sites-available
+  - source: /deploy/upstart/codedeploydemo-uwsgi.conf
+    destination: /etc/init
+permissions:
+  - object: /srv/codedeploydemo/code
+    pattern: "**"
+    owner: www-data
+    group: www-data
+    type:
+      - directory
+hooks:
+  BeforeInstall:
+    - location: deploy/scripts/before_install.sh
+  AfterInstall:
+    - location: deploy/scripts/after_install.sh
+      timeout: 300
+      runas: root
+  ApplicationStart:
+    - location: deploy/scripts/start_server.sh
+      timeout: 300
+      runas: ubuntu
+  ApplicationStop:
+    - location: deploy/scripts/deregister_from_elb.sh
+    - location: deploy/scripts/stop_server.sh
+      timeout: 300
+      runas: ubuntu
+  ValidateService:
+    - location: deploy/scripts/verify.sh
+    - location: deploy/scripts/register_with_elb.sh
