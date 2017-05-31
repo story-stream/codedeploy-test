@@ -14,7 +14,12 @@ class Server(object):
             '/': {
                 'view_func': self.index,
                 'methods': ['GET']
+            },
+            '/aitch': {
+                'view_func': self.aitch,
+                'methods': ['GET']
             }
+
         }
 
         for pattern, options in self.rules.iteritems():
@@ -34,4 +39,10 @@ class Server(object):
         return jsonify({
             'system': self._app.config['PLATFORM'],
             'message': 'ping'
+        })
+
+    def aitch(self):
+        return jsonify({
+            'system': self._app.config['PLATFORM'],
+            'message': 'H is less than aware'
         })
